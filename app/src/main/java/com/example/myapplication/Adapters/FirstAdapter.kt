@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.Net.feeling
 import com.example.myapplication.R
 import com.example.myapplication.feel
 
-class FirstAdapter(val context:Context, val list: List<feel>): RecyclerView.Adapter<FirstAdapter.MyVH>() {
+class FirstAdapter(val context:Context, val list: feeling): RecyclerView.Adapter<FirstAdapter.MyVH>() {
     class MyVH(itemView: View):RecyclerView.ViewHolder(itemView) {
         val imageView:ImageView = itemView.findViewById(R.id.image_feel)
         val textView:TextView = itemView.findViewById(R.id.Text_feel)
@@ -22,12 +23,12 @@ class FirstAdapter(val context:Context, val list: List<feel>): RecyclerView.Adap
     }
 
     override fun onBindViewHolder(holder: MyVH, position: Int) {
-        holder.imageView.setImageDrawable(context.getDrawable(list[position].Image))
-        holder.textView.text = list[position].title
+
+        holder.textView.text = list.data[position].title
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return list.data.size
     }
 
 }

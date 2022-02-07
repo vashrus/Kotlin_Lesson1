@@ -4,8 +4,15 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.example.myapplication.Net.MyInterface
+import com.example.myapplication.Net.MyRetrofit
+import com.example.myapplication.Net.login
 import org.w3c.dom.Text
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.create
 import java.util.regex.Pattern
 import java.util.regex.Pattern.compile
 
@@ -37,8 +44,30 @@ class SignInScreen : AppCompatActivity() {
         {
             if(emailValid(email.text.toString()))
             {
-                val intent = Intent(this,Main_Screen::class.java)
-                startActivity(intent)
+                val hashMap: HashMap<String,String> = hashMapOf()
+                hashMap.put("email",email.text.toString())
+                hashMap.put("password",password.text.toString())
+
+                val ret = MyRetrofit().getRetrofit()
+
+                val inter = ret.create(MyInterface::class.java)
+                val call = inter.getLogin(hashMap).enqueue(object : retrofit2.Callback<login>{
+                    override fun onResponse(call: Call<login>, response: Response<login>) {
+                        if(response.isSuccessful){
+                            val allertDia = AlertDialog.Builder(this@SignInScreen).setTitle("Оштбка").setMessage(response.body().toString()).setPositiveButton("OK",null).create().show()
+                            Toast.makeText(this@SignInScreen, response.body().toString(),Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this@SignInScreen,Main_Screen::class.java)
+                            startActivity(intent)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<login>, t: Throwable) {
+                        Toast.makeText(this@SignInScreen, t.localizedMessage,Toast.LENGTH_SHORT).show()
+                    }
+
+                })
+
+
             }
             else
             {
